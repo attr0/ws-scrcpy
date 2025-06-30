@@ -1,0 +1,15 @@
+[Unit]
+Description=ws-scrcpy
+After=network.target
+Wants=network.target
+
+[Service]
+WorkingDirectory=/opt/ws-scrcpy/dist
+ExecStart=/opt/nodejs/node-v22.16.0-linux-x64/bin/node ./index.js
+Restart=always
+Environment=WS_SCRCPY_CONFIG=/opt/ws-scrcpy/config.yaml
+RestartSec=5s
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+# HTTP[s] servers configuration
+server:
+  - secure: false
+    port: 18088
+
+
