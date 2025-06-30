@@ -1,10 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport' />
+    <meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'
+        name='viewport' />
     <title>WS scrcpy</title>
 </head>
+
 <body>
+    <div id="adb-connect-control" style="margin: 8px;">
+        <input type="text" id="adb-ip-input" placeholder="ADB IP:Port, e.g., 192.168.0.10:5555" style="width:200px;">
+        <button id="adb-connect-button">ADB Connect</button>
+        <span id="adb-connect-status"></span>
+    </div>
 </body>
+
+<script>
+    window.addEventListener("load", e => {
+        const ipInput = document.getElementById('adb-ip-input');
+        const btn = document.getElementById('adb-connect-button');
+        const statusSpan = document.getElementById('adb-connect-status');
+
+        btn.addEventListener('click', async () => {
+            const ipPort = ipInput.value.trim();
+            if (!ipPort) {
+                statusSpan.textContent = 'Please enter IP:Port';
+                return;
+            }
+            statusSpan.textContent = 'Connecting...';
+            try {
+                const res = await fetch('/adb_connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ipPort }),
+                });
+                const text = await res.text();
+                statusSpan.textContent = res.ok ? `✅ ${text}` : `❌ ${text}`;
+            } catch (err) {
+                console.error(err);
+                statusSpan.textContent = 'Request Failed: ' + err;
+            }
+        });
+    })
+</script>
+
+
 </html>

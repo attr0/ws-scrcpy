@@ -8,6 +8,7 @@ import { Config } from '../Config';
 import { TypedEmitter } from '../../common/TypedEmitter';
 import * as process from 'process';
 import { EnvName } from '../EnvName';
+import { exec } from 'child_process';
 
 const DEFAULT_STATIC_DIR = path.join(__dirname, './public');
 
@@ -76,6 +77,26 @@ export class HttpServer extends TypedEmitter<HttpServerEvents> implements Servic
 
     public async start(): Promise<void> {
         this.mainApp = express();
+
+        // handle adb connect request
+        this.mainApp.post('/adb_connect',  express.json(), (req, res) => {
+            const { ipPort } = req.body;
+            if (!ipPort) {
+                res.status(400).send("Parameter Error");
+                return;
+            }
+            console.log(`Receive ADB connect on: ${ipPort}`);
+
+            exec(`adb connect ${ipPort}`, (err, out, errout) => {
+                if (err) {
+                    res.status(500).send(errout || err.message);
+                    return;
+                }
+                res.send(out.trim());
+                return;
+            });
+        });
+
         if (HttpServer.SERVE_STATIC && HttpServer.PUBLIC_DIR) {
             this.mainApp.use(PATHNAME, express.static(HttpServer.PUBLIC_DIR));
 
