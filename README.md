@@ -2,6 +2,14 @@
 
 Web client for [Genymobile/scrcpy][scrcpy] and more.
 
+## What's new here
+
+I add a `adb connect` functionality on the top of the screen so that I can reestablish the adb connection manually. Here is a screenshot:
+
+![adb connect functionality](./docs/imgs/screen%20shot.jpeg)
+
+> Please pay attention on the autentication part!!! As the original project does not involve anything related to security issues. I follow this call: there is **NO** checking on the `ip:port` the user provided. Yeah, you can hack youself.
+
 ## Requirements
 
 Browser must support the following technologies:
